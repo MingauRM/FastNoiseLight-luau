@@ -84,11 +84,7 @@ local function perlin2d(obj: NoiseObject, x: number, y: number): number
 	local gradBottomRight = vector.dot(h11, f - vector.create(1.0, 1.0))
 
 	local result =
-		math.lerp(
-			math.lerp(gradTopLeft, gradTopRight, u.x),
-			math.lerp(gradBottomLeft, gradBottomRight, u.y),
-			u.y
-		)
+		math.lerp(math.lerp(gradTopLeft, gradTopRight, u.x), math.lerp(gradBottomLeft, gradBottomRight, u.y), u.y)
 
 	return result
 end
@@ -177,11 +173,7 @@ local function value2d(obj: NoiseObject, x: number, y: number): number
 
 	local u = vector.create(f.x * f.x * (3.0 - 2.0 * f.x), f.y * f.y * (3.0 - 2.0 * f.y))
 
-	return math.lerp(
-		math.lerp(a, b, u.x),
-		math.lerp(c, d, u.x),
-		u.y
-	)
+	return math.lerp(math.lerp(a, b, u.x), math.lerp(c, d, u.x), u.y)
 end
 
 ---------- | 3D | ----------
@@ -320,9 +312,13 @@ local function value3d(obj: NoiseObject, x: number, y: number, z: number): numbe
 
 	local i = vector.create(math.floor(x), math.floor(y), math.floor(z))
 
-	local f = vector.create(frac(x), frac(y), frac(z))
+	local fv = vector.create(frac(x), frac(y), frac(z))
 
-	local u = vector.create(f.x * f.x * (3.0 - 2.0 * f.x), f.y * f.y * (3.0 - 2.0 * f.y), f.z * f.z * (3.0 - 2.0 * f.z))
+	local u = vector.create(
+		fv.x * fv.x * (3.0 - 2.0 * fv.x),
+		fv.y * fv.y * (3.0 - 2.0 * fv.y),
+		fv.z * fv.z * (3.0 - 2.0 * fv.z)
+	)
 
 	local a = hash1D(i, SEED)
 	local b = hash1D(vector.create(i.x + 1.0, i.y, i.z), SEED)
@@ -478,13 +474,13 @@ type NoiseObject = {
 	Lacunarity: number,
 } & {
 	Perlin: ((self: NoiseObject, x: number, y: number) -> number)
-	& ((self: NoiseObject, x: number, y: number, z: number) -> number),
+		& ((self: NoiseObject, x: number, y: number, z: number) -> number),
 	Simplex: ((self: NoiseObject, x: number, y: number) -> number)
-	& ((self: NoiseObject, x: number, y: number, z: number) -> number),
+		& ((self: NoiseObject, x: number, y: number, z: number) -> number),
 	Voronoi: ((self: NoiseObject, x: number, y: number) -> number)
-	& ((self: NoiseObject, x: number, y: number, z: number) -> number),
+		& ((self: NoiseObject, x: number, y: number, z: number) -> number),
 	Value: ((self: NoiseObject, x: number, y: number) -> number)
-	& ((self: NoiseObject, x: number, y: number, z: number) -> number),
+		& ((self: NoiseObject, x: number, y: number, z: number) -> number),
 }
 
 ---------- | END | ----------
